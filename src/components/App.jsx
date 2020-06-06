@@ -1,11 +1,12 @@
 import React from 'react';
 import reactDOM from 'react-dom';
 import DrawingPad from './DrawingPad.jsx';
+import data from '../JSON.js';
 
 const sketchData = {
   element: '#sketchpad',
-  width: 400,
-  height: 400
+  width: 600,
+  height: 600
 }
 
 const App = (props) => {

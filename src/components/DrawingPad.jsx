@@ -3,8 +3,8 @@ import reactDOM from 'react-dom';
 import Sketchpad from '../sketchpad.js';
 
 const DrawingPad = (props) => {
-
   useEffect(() => {
+    props.sketchData.element = '#sketchpad';
     window.sketchpad = new Sketchpad(props.sketchData)
   }, []);
 
@@ -16,11 +16,20 @@ const DrawingPad = (props) => {
     sketchpad.redo();
   };
 
+  const handleSave = () => {
+    console.log(sketchpad.toJSON())
+  }
+
   return (
     <div>
-      <canvas className='sketchpad' id='sketchpad'></canvas>
-      <button onClick={handleUndo}>Undo</button>
-      <button onClick={handleRedo}>Redo</button>
+      <div>
+        <canvas className='sketchpad' id='sketchpad'></canvas>
+      </div>
+      <div>
+        <button onClick={handleUndo}>Undo</button>
+        <button onClick={handleRedo}>Redo</button>
+        <button onClick={handleSave}>Save</button>
+      </div>
     </div>
   )
 }
