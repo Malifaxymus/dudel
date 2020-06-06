@@ -5,14 +5,24 @@ import Sketchpad from '../sketchpad.js';
 const DrawingPad = (props) => {
 
   useEffect(() => {
-      var sketchpad = new Sketchpad({
-        element: '#sketchpad',
-        width: 400,
-        height: 400
-      })
+    window.sketchpad = new Sketchpad(props.sketchData)
   }, []);
 
-  return (<canvas className='sketchpad' id='sketchpad'></canvas>)
+  const handleUndo = () => {
+    sketchpad.undo();
+  };
+
+  const handleRedo = () => {
+    sketchpad.redo();
+  };
+
+  return (
+    <div>
+      <canvas className='sketchpad' id='sketchpad'></canvas>
+      <button onClick={handleUndo}>Undo</button>
+      <button onClick={handleRedo}>Redo</button>
+    </div>
+  )
 }
 
 export default DrawingPad;
