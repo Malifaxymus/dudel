@@ -1,5 +1,4 @@
 import React from 'react';
-import reactDOM from 'react-dom';
 import DrawingPad from './DrawingPad.jsx';
 import data from '../JSON.js';
 
