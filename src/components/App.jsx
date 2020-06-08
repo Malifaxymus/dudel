@@ -17,12 +17,20 @@ const App = (props) => {
     socket.on("connect", () => {
       console.log("socket connection established.");
     });
+    socket.on("test", (data) => {
+      console.log(data);
+    });
   }, []);
 
   const [testEvent, setTestEvent] = useState("");
+  const [username, setUsername] = useState("");
 
   const emitTest = () => {
     socket.emit(testEvent);
+  };
+
+  const submitUsername = () => {
+    socket.emit("addPlayer", { username });
   };
 
   return (
@@ -36,6 +44,12 @@ const App = (props) => {
         }}
       ></input>
       <button onClick={emitTest}>EMIT TEST EVENT</button>
+      <input
+        onChange={(e) => {
+          setUsername(e.target.value);
+        }}
+      ></input>
+      <button onClick={submitUsername}>SUBMIT USERNAME</button>
     </div>
   );
 };
