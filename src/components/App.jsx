@@ -14,44 +14,53 @@ let socket;
 const App = (props) => {
   useEffect(() => {
     socket = io("/");
+
     socket.on("connect", () => {
       console.log("socket connection established.");
     });
+
     socket.on("test", (data) => {
       console.log(data);
     });
+
+    socket.on("startGame", (data) => {
+      console.log(data.msg);
+      setGameState("doodle");
+    });
   }, []);
 
-  const [testEvent, setTestEvent] = useState("");
   const [username, setUsername] = useState("");
-
-  const emitTest = () => {
-    socket.emit(testEvent);
-  };
+  const [gameState, setGameState] = useState("lobby");
 
   const submitUsername = () => {
     socket.emit("addPlayer", { username });
   };
 
-  return (
-    <div>
-      <h2>testy boi</h2>
-      <DrawingPad sketchData={sketchData} />
-      Enter event name:
-      <input
-        onChange={(e) => {
-          setTestEvent(e.target.value);
-        }}
-      ></input>
-      <button onClick={emitTest}>EMIT TEST EVENT</button>
-      <input
-        onChange={(e) => {
-          setUsername(e.target.value);
-        }}
-      ></input>
-      <button onClick={submitUsername}>SUBMIT USERNAME</button>
-    </div>
-  );
+  const submitAllReady = () => {
+    socket.emit("allReady", { allReady: true });
+  };
+
+  if (gameState == "lobby") {
+    return (
+      <div>
+        <h2>testy boi</h2>
+        <DrawingPad sketchData={sketchData} />
+        <input
+          onChange={(e) => {
+            setUsername(e.target.value);
+          }}
+        ></input>
+        <button onClick={submitUsername}>SUBMIT USERNAME</button>
+        <button onClick={submitAllReady}>Ready to Start</button>
+      </div>
+    );
+  } else if (gameState == "doodle") {
+    return <h1>DOODLE STATE PLACEHOLDER</h1>;
+  } else if (gameState == "title") {
+    return <h1>TITLE STATE PLACEHOLDER</h1>;
+  } else {
+    return <h1>GAME STATE IS BROKEN WHAT DID YOU DO</h1>;
+  }
 };
 
 export default App;

@@ -9,7 +9,6 @@ app.use(express.static(path.join(__dirname, "dist")));
 
 // ******* GAME STATE *******
 const STATE = {
-  notebooks: [],
   isActiveGame: false,
 };
 
@@ -32,6 +31,15 @@ io.on("connection", (socket) => {
       socket: socket.id,
     };
     console.log(`player added. All players: ${getPlayerList()}`);
+  });
+
+  socket.on("allReady", (data) => {
+    if (STATE.isActiveGame) {
+      //prevent late-joining players from clicking "ready to start" and breaking game
+      return;
+    }
+    STATE.isActiveGame = true;
+    io.sockets.emit("startGame", { msg: "starting game!" });
   });
 });
 
