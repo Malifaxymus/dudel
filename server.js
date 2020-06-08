@@ -12,10 +12,23 @@ const STATE = {
   isActiveGame: false,
 };
 
+let head = null;
 const players = {};
 const getPlayerList = () => {
   return Object.keys(players);
 };
+
+let usedPrompts = ['default'];
+generatePrompt = () => {
+  const prompts = ['Green Thumb','Rotten Apple','Nightmare','Reality TV Show','Dynamite','Gymnast','Flying Squirrel','Garden','Race Horse','Fish Out Of Water','Ballpark','Drumstick','Rain Forest','Foot Long Hot Dog','In the Dog House','Wristwatch','Ox','Scorpion','Thinking Cap','Iceberg Lettuce','Toxic Waste','Doctor','Mad Cow','Corn Bread','Venus Flytrap','Bearded Lady','Elevator Music','Haunted House','Scuba Diver','Cinderella','Big Cheese','False Teeth','High Jump','Sheriff','Drive-In Movie','Gravy Train','Roommate','Kilt','Babysitter','Wine Celler','Oriental Rug','Hot Dogs','Soccer Field','Pain Killer','Pantry','5-O\'Clock Shadow','Butler','Orbit','Toss The Bouquet','Flash Flood','Cul-De-Sac'];
+
+  let prompt = 'default';
+  while (usedPrompts.includes(prompt)) {
+    prompt = prompts[Math.floor(Math.random() * prompts.length)]
+  }
+  usedPrompts.push(prompt)
+  return prompt
+}
 
 // ******* EVENTS *******
 io.on("connection", (socket) => {
@@ -27,9 +40,15 @@ io.on("connection", (socket) => {
 
   // give us an external reference to the socket by associating its native ID with a username
   socket.on("addPlayer", (data) => {
-    players[data.username] = {
+    let newPlayer = players[data.username] = {
       socket: socket.id,
+      next: players[getPlayerList()[0]],
+      book: [generatePrompt()],
     };
+    if (head) head.next = newPlayer;
+    head = newPlayer;
+
+    console.log(head)
     console.log(`player added. All players: ${getPlayerList()}`);
   });
 
@@ -39,7 +58,13 @@ io.on("connection", (socket) => {
       return;
     }
     STATE.isActiveGame = true;
-    io.sockets.emit("startGame", { msg: "starting game!" });
+    const playerList = getPlayerList()
+
+    playerList.forEach(player => {
+      player = players[player]
+      io.sockets.connected[player.socket].emit("startGame", {prompt: player.book.pop()})
+    })
+    //io.sockets.emit("startGame", { msg: "starting game!" });
   });
 });
 

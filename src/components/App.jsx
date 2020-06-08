@@ -25,12 +25,14 @@ const App = (props) => {
 
     socket.on("startGame", (data) => {
       console.log(data.msg);
+      setDoodlePrompt(data.prompt)
       setGameState("doodle");
     });
   }, []);
 
   const [username, setUsername] = useState("");
   const [gameState, setGameState] = useState("lobby");
+  const [doodlePrompt, setDoodlePrompt] = useState('');
 
   const submitUsername = () => {
     socket.emit("addPlayer", { username });
@@ -55,7 +57,7 @@ const App = (props) => {
       </div>
     );
   } else if (gameState == "doodle") {
-    return <h1>DOODLE STATE PLACEHOLDER</h1>;
+    return <h1>{doodlePrompt}</h1>;
   } else if (gameState == "title") {
     return <h1>TITLE STATE PLACEHOLDER</h1>;
   } else {
