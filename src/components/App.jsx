@@ -14,8 +14,8 @@ const App = (props) => {
       console.log("socket connection established.");
     });
 
-    socket.on("test", (data) => {
-      console.log(data);
+    socket.on("newPlayer", (data) => {
+      setPlayers(data)
     });
 
     socket.on("startGame", (data) => {
@@ -48,12 +48,14 @@ const App = (props) => {
   };
 
   const [username, setUsername] = useState("");
-  const [gameState, setGameState] = useState("lobby");
+  const [players, setPlayers] = useState([])
+  const [gameState, setGameState] = useState("username");
   const [doodlePrompt, setDoodlePrompt] = useState("");
   const [guessData, setGuessData] = useState({})
 
   const submitUsername = () => {
     socket.emit("addPlayer", { username });
+    setGameState("lobby")
   };
 
   const submitAllReady = () => {
@@ -65,35 +67,47 @@ const App = (props) => {
     setGameState("waiting")
   }
 
+  if (gameState == "username") {
+   return (
+    <div>
+      <h1>Dudel</h1>
+      <div id="username">
+        Please Enter Your Name
+        <input onChange={(e) => setUsername(e.target.value)}></input>
+        <button onClick={submitUsername}>Submit</button>
+      </div>
+    </div>
+   );
+  }
   if (gameState == "lobby") {
     return (
       <div>
-        <h2>Dudel</h2>
-        <DrawingPad sketchData={sketchData} />
-        <input
-          onChange={(e) => {
-            setUsername(e.target.value);
-          }}
-        ></input>
-        <button onClick={submitUsername}>SUBMIT USERNAME</button>
-        <button onClick={submitAllReady}>Ready to Start</button>
+        <h1>Dudel</h1>
+        <div>{
+        players.map(x => {
+          return <h2>{x}</h2>
+        })
+        }</div>
+        <button onClick={submitAllReady}>Start</button>
       </div>
     );
   } else if (gameState == "dudel") {
     return (
       <div>
-        <h1>{doodlePrompt}</h1>
+        <h1>Dudel</h1>
+        <h2>{doodlePrompt}</h2>
         <DrawingPad sketchData={sketchData} submitDudel={submitDudel} />
       </div>
     )
   } else if (gameState == "guess") {
     return (
       <div>
+        <h1>Dudel</h1>
         <GuessingPad sketchData={guessData} submitDudel={submitDudel} />
       </div>
     );
   } else if (gameState == "waiting") {
-    return <h1>Please Wait For Other Players...</h1>
+    return <h2>Please Wait For Other Players...</h2>
   } else if (gameState == "done") {
     return <h1>Done!</h1>
   } else {

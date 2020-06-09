@@ -20,7 +20,7 @@ const GuessingPad = (props) => {
       <div>
         <canvas className='sketchpad' id='sketchpad'></canvas>
       </div>
-        What is this?
+        <h2>What is this?</h2>
         <input type='text' onChange={(e) => handleChange(e)}></input>
         <button onClick={() => props.submitDudel(guess)}>Submit</button>
     </div>

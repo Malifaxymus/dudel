@@ -52,6 +52,7 @@ io.on("connection", (socket) => {
     console.log(head)
 
     console.log(`player added. All players: ${getPlayerList()}`);
+    io.sockets.emit('newPlayer', getPlayerList())
   });
 
   socket.on("allReady", (data) => {
