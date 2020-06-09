@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon server.js",
-    "prestart": "parcel build ./src/public/index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

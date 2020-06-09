@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import Sketchpad from '../sketchpad.js';
 
 const DrawingPad = (props) => {
+
   useEffect(() => {
     props.sketchData.element = '#sketchpad';
     window.sketchpad = new Sketchpad(props.sketchData)
@@ -15,10 +16,6 @@ const DrawingPad = (props) => {
     sketchpad.redo();
   };
 
-  const handleSave = () => {
-    console.log(sketchpad.toJSON())
-  }
-
   return (
     <div>
       <div>
@@ -27,7 +24,7 @@ const DrawingPad = (props) => {
       <div>
         <button onClick={handleUndo}>Undo</button>
         <button onClick={handleRedo}>Redo</button>
-        <button onClick={handleSave}>Save</button>
+        <button onClick={() => props.submitDudel(sketchpad.toJSON())}>Submit</button>
       </div>
     </div>
   )

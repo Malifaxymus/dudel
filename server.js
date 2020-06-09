@@ -10,6 +10,8 @@ app.use(express.static(path.join(__dirname, "dist")));
 // ******* GAME STATE *******
 const STATE = {
   isActiveGame: false,
+  round: 0,
+  dudelsRecieved: 0
 };
 
 let head = null;
@@ -47,8 +49,8 @@ io.on("connection", (socket) => {
     };
     if (head) head.next = newPlayer;
     head = newPlayer;
-
     console.log(head)
+
     console.log(`player added. All players: ${getPlayerList()}`);
   });
 
@@ -58,27 +60,68 @@ io.on("connection", (socket) => {
       return;
     }
     STATE.isActiveGame = true;
-    const playerList = getPlayerList()
+    const playerList = getPlayerList();
 
     playerList.forEach(player => {
-      player = players[player]
-      io.sockets.connected[player.socket].emit("startGame", {prompt: player.book.pop()})
-    })
+      player = players[player];
+      io.sockets.connected[player.socket].emit("startGame", {prompt: player.book[0]});
+    });
     //io.sockets.emit("startGame", { msg: "starting game!" });
   });
+
+  socket.on('submit', (data) => {
+    players[data.username].book.push(data.dudel)
+    STATE.dudelsRecieved++
+    console.log('successfully added')
+
+    if (STATE.dudelsRecieved === getPlayerList().length) {
+      nextTurn()
+    }
+  });
+
+  nextTurn = () => {
+    STATE.dudelsRecieved = 0;
+    STATE.round++;
+
+    //moves each book to the next player
+    let currentBook = null;
+    let start = players[getPlayerList()[0]]
+    let currentPlayer = start
+
+    for (let i = 0; i < getPlayerList().length + 1; i++) {
+      let saved = currentPlayer.book
+      if (currentBook) currentPlayer.book = currentBook
+      currentBook = saved
+      currentPlayer = currentPlayer.next
+    }
+
+    if (STATE.round === getPlayerList().length) {
+      getPlayerList().forEach(player => {
+        player = players[player];
+        io.sockets.connected[player.socket].emit("done", {book: player.book});
+      });
+      return;
+    }
+
+    getPlayerList().forEach(player => {
+      player = players[player];
+      if (STATE.round%2 !== 0) io.sockets.connected[player.socket].emit("guess", {dudel: player.book[player.book.length - 1]});
+      if (STATE.round%2 === 0) io.sockets.connected[player.socket].emit("dudel", {prompt: player.book[player.book.length - 1]});
+    });
+  }
 });
 
 //proof of concept for accessing a specific player socket outside the context of connection fn. Every 10 sec, gets the socket ID of the first player in the list and sends a message to just that player (console logged on client side)
-setInterval(() => {
-  let playerList = getPlayerList();
-  if (playerList.length) {
-    let firstPlayer = playerList[0];
-    let socket = players[firstPlayer].socket;
-    if (socket) {
-      io.sockets.connected[socket].emit("test", "hey player 1");
-    }
-  }
-}, 10000);
+// setInterval(() => {
+//   let playerList = getPlayerList();
+//   if (playerList.length) {
+//     let firstPlayer = playerList[0];
+//     let socket = players[firstPlayer].socket;
+//     if (socket) {
+//       io.sockets.connected[socket].emit("test", "hey player 1");
+//     }
+//   }
+// }, 10000);
 
 http.listen(PORT, () => {
   console.log(`listening on port ${PORT}`);

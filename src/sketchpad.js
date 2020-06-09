@@ -246,9 +246,9 @@ class Sketchpad {
       }, delay + interval + loopInterval));
     }
 
-    this.animateIds(setTimeout(() => {
-      this.trigger('animation-end', [interval, loop, loopInterval]);
-    }, delay + interval));
+    // this.animateIds(setTimeout(() => {
+    //   this.trigger('animation-end', [interval, loop, loopInterval]);
+    // }, delay + interval));
   }
 
   /*
