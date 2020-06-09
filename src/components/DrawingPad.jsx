@@ -22,8 +22,8 @@ const DrawingPad = (props) => {
         <canvas className='sketchpad' id='sketchpad'></canvas>
       </div>
       <div>
-        <button onClick={handleUndo}>Undo</button>
-        <button onClick={handleRedo}>Redo</button>
+        <button onClick={handleUndo}>{'<'}</button>
+        <button onClick={handleRedo}>{'>'}</button>
         <button onClick={() => props.submitDudel(sketchpad.toJSON())}>Submit</button>
       </div>
     </div>

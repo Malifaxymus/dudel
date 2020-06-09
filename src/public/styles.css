@@ -1,8 +1,44 @@
-#app {
+html, body {
+  font-family: Arial, Helvetica, sans-serif;
   display: flex;
-  align-content: center;
   justify-content: center;
-}
-#sketchpad {
-  outline: black solid 2px;
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  min-width: 100%;
+  background-color: rgb(255, 255, 255);
+} h1 {
+  font-size: 60px;
+  font-weight: 900;
+  margin: 5px;
+  margin-left: 0;
+}#app {
+  color: white;
+  display: flex;
+  justify-content: center;
+  width: 60%;
+  min-height: 100%;
+  background: linear-gradient(150deg, #147aff 45%, #298dff 10%);
+  box-shadow: 0 0 30px rgb(34, 34, 34);
+} canvas {
+  background-color: white;
+  box-shadow: 0 0 8px rgba(23, 23, 23, 0.153);
+} button {
+  color: rgb(11, 96, 194);
+  background-color: #faf8f2;
+  border-radius: 3px;
+  font-size: 25px;
+  font-weight: 900;
+  margin: 10px;
+  margin-left: 0;
+  border: none;
+  box-shadow: 0 0 8px rgba(23, 23, 23, 0.153);
+} input {
+  font-size: 25px;
+  border: none;
+  border-radius: 3px;
+  margin: 10px;
+  box-shadow: 0 0 8px rgba(23, 23, 23, 0.153);
+} #username {
+  font-size: 25px;
 }
