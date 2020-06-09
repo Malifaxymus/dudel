@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import DrawingPad from "./DrawingPad.jsx";
 import GuessingPad from "./GuessingPad.jsx";
+import Display from "./Display.jsx";
 import data from "../JSON.js";
 import io from "socket.io-client";
 
@@ -36,7 +37,7 @@ const App = (props) => {
     })
 
     socket.on("done", (data) => {
-      console.log(data);
+      setBook(data.book);
       setGameState("done");
     })
   }, []);
@@ -51,7 +52,8 @@ const App = (props) => {
   const [players, setPlayers] = useState([])
   const [gameState, setGameState] = useState("username");
   const [doodlePrompt, setDoodlePrompt] = useState("");
-  const [guessData, setGuessData] = useState({})
+  const [guessData, setGuessData] = useState({});
+  const [book, setBook] = useState([]);
 
   const submitUsername = () => {
     socket.emit("addPlayer", { username });
@@ -109,7 +111,7 @@ const App = (props) => {
   } else if (gameState == "waiting") {
     return <h2>Please Wait For Other Players...</h2>
   } else if (gameState == "done") {
-    return <h1>Done!</h1>
+    return <Display data={book} />
   } else {
     return <h1>GAME STATE IS BROKEN WHAT DID YOU DO</h1>;
   }

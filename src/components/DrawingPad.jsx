@@ -5,6 +5,7 @@ const DrawingPad = (props) => {
 
   useEffect(() => {
     props.sketchData.element = '#sketchpad';
+    console.log(props.sketchData)
     window.sketchpad = new Sketchpad(props.sketchData)
   }, []);
 

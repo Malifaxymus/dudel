@@ -6,7 +6,7 @@ const GuessingPad = (props) => {
   useEffect(() => {
     props.sketchData.element = '#sketchpad';
     window.sketchpad = new Sketchpad(props.sketchData)
-    window.sketchpad.animate(3)
+    window.sketchpad.animate(.7)
   }, []);
 
   const [guess, setGuess] = useState('')
