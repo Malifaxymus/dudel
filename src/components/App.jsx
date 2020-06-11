@@ -16,7 +16,7 @@ const App = (props) => {
     });
 
     socket.on("newPlayer", (data) => {
-      setPlayers(data)
+      setPlayers(data);
     });
 
     socket.on("startGame", (data) => {
@@ -29,17 +29,21 @@ const App = (props) => {
       dudel.readOnly = true;
       setGuessData(dudel);
       setGameState("guess");
-    })
+    });
 
     socket.on("dudel", (data) => {
       setDoodlePrompt(data.prompt);
       setGameState("dudel");
-    })
+    });
 
     socket.on("done", (data) => {
       setBook(data.book);
       setGameState("done");
-    })
+    });
+
+    socket.on("msg", (msg) => {
+      setMesssage(msg);
+    });
   }, []);
 
   const sketchData = {
@@ -49,15 +53,16 @@ const App = (props) => {
   };
 
   const [username, setUsername] = useState("");
-  const [players, setPlayers] = useState([])
+  const [players, setPlayers] = useState([]);
   const [gameState, setGameState] = useState("username");
   const [doodlePrompt, setDoodlePrompt] = useState("");
   const [guessData, setGuessData] = useState({});
   const [book, setBook] = useState([]);
+  const [message, setMesssage] = useState("Welcome to Dudel!");
 
   const submitUsername = () => {
     socket.emit("addPlayer", { username });
-    setGameState("lobby")
+    setGameState("lobby");
   };
 
   const submitAllReady = () => {
@@ -65,31 +70,32 @@ const App = (props) => {
   };
 
   const submitDudel = (dudel) => {
-    socket.emit("submit", { username, dudel })
-    setGameState("waiting")
-  }
+    socket.emit("submit", { username, dudel });
+    setGameState("waiting");
+  };
 
   if (gameState == "username") {
-   return (
-    <div>
-      <h1>Dudel</h1>
-      <div id="username">
-        Please Enter Your Name
-        <input onChange={(e) => setUsername(e.target.value)}></input>
-        <button onClick={submitUsername}>Submit</button>
+    return (
+      <div>
+        <h1>Dudel</h1>
+        <div id="username">
+          Please Enter Your Name
+          <input onChange={(e) => setUsername(e.target.value)}></input>
+          <button onClick={submitUsername}>Submit</button>
+        </div>
+        <p>{message}</p>
       </div>
-    </div>
-   );
+    );
   }
   if (gameState == "lobby") {
     return (
       <div>
         <h1>Dudel</h1>
-        <div>{
-        players.map(x => {
-          return <h2>{x}</h2>
-        })
-        }</div>
+        <div>
+          {players.map((x) => {
+            return <h2>{x}</h2>;
+          })}
+        </div>
         <button onClick={submitAllReady}>Start</button>
       </div>
     );
@@ -100,7 +106,7 @@ const App = (props) => {
         <h2>{doodlePrompt}</h2>
         <DrawingPad sketchData={sketchData} submitDudel={submitDudel} />
       </div>
-    )
+    );
   } else if (gameState == "guess") {
     return (
       <div>
@@ -109,9 +115,9 @@ const App = (props) => {
       </div>
     );
   } else if (gameState == "waiting") {
-    return <h2>Please Wait For Other Players...</h2>
+    return <h2>Please Wait For Other Players...</h2>;
   } else if (gameState == "done") {
-    return <Display data={book} />
+    return <Display data={book} />;
   } else {
     return <h1>GAME STATE IS BROKEN WHAT DID YOU DO</h1>;
   }

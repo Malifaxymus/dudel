@@ -95,6 +95,10 @@ io.on("connection", (socket) => {
   // give us an external reference to the socket by associating its native ID with a username
   socket.on("addPlayer", (data) => {
     if (STATE.isActiveGame) {
+      socket.emit(
+        "msg",
+        "A game is already in progress. Please wait for a new game to start."
+      );
       return;
     }
     let newPlayer = (players[data.username] = {
